@@ -1,0 +1,99 @@
+SELECT stu_name, grade, sub_name
+FROM student
+INNER JOIN grades 
+ON student.stu_id = grades.stu_id
+INNER JOIN subject  
+ON subject.sub_id  = grades.sub_id;
+
+
+CREATE VIEW tracks_subjects AS
+SELECT t_name, sub_name
+FROM track 
+INNER JOIN track_sub  
+ON track.t_id   = track_sub .t_id  
+INNER JOIN subject   
+ON subject.sub_id  = track_sub.sub_id;
+
+SELECT * FROM tracks_subjects;
+
+
+CREATE VIEW student_subject AS
+SELECT stu_name, sub_name
+FROM student 
+INNER JOIN stu_sub   
+ON student.stu_id = stu_sub.stu_id  
+INNER JOIN subject   
+ON subject.sub_id = stu_sub.sub_id;
+
+SELECT * FROM student_subject;
+
+SELECT stu_name, age(current_date, birth_date)
+FROM student 
+
+SELECT stu_name, extract(year from birth_date)
+FROM student;
+
+INSERT INTO exam
+VALUES (44, NOW());
+
+create function hello_world(username varchar(20))
+returns varchar(40)
+as
+$$
+begin
+   return concat('welcome',' ', username);
+end;
+$$
+language plpgsql;
+
+select hello_world(stu_name)
+from student
+
+create function student_score(student_id int, subject_id int)
+returns int
+as
+$$
+declare
+   score int;
+begin
+select grade into score from grades where stu_id = student_id and sub_id = subject_id;
+return score;
+end
+$$
+language plpgsql;
+
+select student_score(1, 200)
+
+
+create function even_odd_1(num int)
+returns varchar(20)
+as
+$$
+begin
+ if (num % 2 = 0) then
+ return 'even';
+  else
+  return 'odd';
+  end if;
+end
+$$
+language plpgsql;
+
+select even_odd_1(6)
+
+-------------------------------------------
+
+create function ave_grade(subject varchar(20))
+returns int 
+as
+$$
+declare
+   average int;
+begin
+select ave(grade) as average from grades inner join subject on grade.sub_id = subject.sub_id
+where subject.sub_name = subject;
+return average;
+end
+$$
+language plpgsql;
+
